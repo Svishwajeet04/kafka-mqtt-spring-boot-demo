@@ -9,13 +9,11 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -33,7 +31,7 @@ public class KafkaPublisher {
         this.deviceIds = deviceRepository.findAll().stream().map(Device::getId).toList();
     }
 
-    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 1)
+    //    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 1)
     public void pushToKafka() {
         log.info("creating device info");
         var di = DeviceInfo.builder()

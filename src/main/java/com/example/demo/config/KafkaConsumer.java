@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +15,7 @@ public class KafkaConsumer {
     @Autowired
     private DeviceInfoService deviceInfoService;
 
-    @KafkaListener(topics = "device_info", groupId = "device_info")
+    //    @KafkaListener(topics = "device_info", groupId = "device_info")
     public void getDeviceInfo(String deviceInfoString) {
         log.info("got device info");
         try {

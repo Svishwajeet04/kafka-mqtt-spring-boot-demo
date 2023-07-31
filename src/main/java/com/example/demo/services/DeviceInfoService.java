@@ -6,8 +6,10 @@ import com.example.demo.repos.DeviceInfoRepository;
 import com.example.demo.repos.DeviceRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +50,10 @@ public class DeviceInfoService {
         try {
             var sinceTime = LocalDateTime.from(Instant.ofEpochMilli(sinceTimestamp).atZone(ZoneId.systemDefault()));
             Query query = Query.query(Criteria.where("creationTime").gte(sinceTime).and("deviceId").is(deviceId));
-            query.fields().include(props);
-            return ResponseEntity.ok(mongoTemplate.find(query, DeviceInfo.class, "device_info"));
+            for (String prop : props) {
+                query.fields().project(ArithmeticOperators.Multiply.valueOf("values.".concat(prop)).multiplyBy(1000)).as("values.".concat(prop));
+            }
+            return ResponseEntity.ok(mongoTemplate.find(query, Document.class, "device_info"));
         } catch (Exception e) {
             log.error("error {}", e.getMessage(), e);
             throw e;
